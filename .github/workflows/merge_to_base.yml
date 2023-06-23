@@ -62,7 +62,7 @@ jobs:
           transition: "Closed"
         if: ${{ env.issueType == 'Bug' || env.issueType == 'Subtask' && env.ticketStatus != 'SoleBug' }}
         
-#       - name: Delete branch
-#         run: |
-#           git push origin -d ${{env.issueType}}-${{env.issueKey}}
-#         if: ${{ env.issueType == 'Bug' && env.ticketStatus != 'SoleBug' || env.issueType == 'Subtask' }}
+      - name: Delete branch
+        run: |
+          git push origin -d ${{env.issueType}}-${{env.issueKey}}
+        if: ${{ env.issueType == 'Bug' && env.ticketStatus != 'SoleBug' || env.issueType == 'Subtask' }}
