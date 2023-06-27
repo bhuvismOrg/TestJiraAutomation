@@ -51,7 +51,7 @@ jobs:
                 "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
                 | jq '.[-1].state')
               echo "PR State: $PR_State"
-              if [[ "$PR_State" == "APPROVED" ]]; then
+              if [[ "$PR_State" == APPROVED ]]; then
                 IS_ALL_PRS_APPROVED="true"
               else
                 IS_ALL_PRS_APPROVED="false"
