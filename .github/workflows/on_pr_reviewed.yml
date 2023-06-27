@@ -59,7 +59,7 @@ jobs:
                 PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                   "https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews" | json_pp)
               fi
-              echo "Response: PR_API_RES"
+              echo "Response: $PR_API_RES"
               if [[ "$PR_API_RES" != '[]' ]]; then
                 PR_State=$(echo "$PR_API_RES" | jq '.[-1].state')
                 echo "PR_State: $PR_State"
