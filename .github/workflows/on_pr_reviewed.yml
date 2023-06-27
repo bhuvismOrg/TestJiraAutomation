@@ -42,12 +42,10 @@ jobs:
               PR_State=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
                 | jq '.[-1].state')
-              if [[ "$PR_State" == "APPROVED" ]]; then
-                $IS_ALL_PRS_APPROVED="true"
-              else
+              echo "PR State: $PR_State"
+              if [[ "$PR_State" != "APPROVED" ]]; then
                 $IS_ALL_PRS_APPROVED="false"
               fi
-              echo "Processing value: $PR_State"
             fi
           done
           echo "All PRs state: $IS_ALL_PRS_APPROVED"
