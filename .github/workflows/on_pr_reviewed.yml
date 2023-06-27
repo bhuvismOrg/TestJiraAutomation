@@ -40,11 +40,9 @@ jobs:
             if [[ "$value" != null ]]; then
               echo "Processing value: $value"
               PR_REVIEWS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews")
+                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
+                | jq '.[-1]')
               echo "Processing value: $PR_REVIEWS"
-              PR_REVIEWS_LENGTH=${#PR_REVIEWS[@]}
-              echo "PR Reviews Length: $PR_REVIEWS_LENGTH"
-              echo "PR Reviews last element: ${PR_REVIEWS[-1]}"
             fi
           done
         
