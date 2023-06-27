@@ -39,9 +39,9 @@ jobs:
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               echo "Processing value: $value"
-              PR_Status=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
-                | jq -r '.head.ref')
+              PR_REVIEWS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews")
+              echo "Processing value: $PR_REVIEWS"
             fi
           done
         
