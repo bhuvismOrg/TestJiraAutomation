@@ -56,7 +56,7 @@ jobs:
                   "https://api.github.com/repos/bhuvismOrg/$REPO1/pulls/$value/reviews" | json_pp)
               else
                 echo "$REPO2"
-                PR_API_RES=$(curl -s 'https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews' \
+                PR_API_RES=$(curl -s 'https://api.github.com/repos/bhuvismOrg/BtempOrg/pulls/59/reviews' \
                   -H 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' | json_pp)
               fi
               echo "Response: $PR_API_RES"
