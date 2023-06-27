@@ -35,6 +35,15 @@ jobs:
           PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
           PRS_ARRAY=("$PR1" "$PR2")
+          IS_ALL_PRS_APPROVED="true"
+          x="true"
+          echo "Previous value of x: $x"
+          
+          if [[ "$x" == "true" ]]; then
+            x="false"
+          fi
+          
+          echo "New value of x: $x"
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               echo "Processing value: $value"
