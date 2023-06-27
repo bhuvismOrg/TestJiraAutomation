@@ -49,15 +49,15 @@ jobs:
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               IS_ALL_PRS_APPROVED="false"
-              echo "Processing value: $value, $PR1,$PR2"
+              echo "Processing value: $value"
               if [[ "$value" == "$PR1" ]]; then
                 echo "$REPO1"
                 PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                   "https://api.github.com/repos/bhuvismOrg/$REPO1/pulls/$value/reviews" | json_pp)
               else
                 echo "$REPO2"
-                PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                  "https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews" | json_pp)
+                PR_API_RES=$(curl -s https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews \
+                  -H 'Authorization: Bearer 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' | json_pp)
               fi
               echo "Response: $PR_API_RES"
               if [[ "$PR_API_RES" != '[]' ]]; then
