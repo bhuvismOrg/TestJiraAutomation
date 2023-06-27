@@ -21,6 +21,23 @@ jobs:
             | jq -r '.head.ref')
           SECOND_PART=$(echo "$BRANCH_NAME" | cut -d'-' -f2-)
           echo "issue_key=$SECOND_PART" >> "$GITHUB_ENV"
+          
+      - name: Check all PRs in the ticket
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_BASIC_API_TOKEN }}
+        run: |
+          ISSUE_KEY="${{ env.issue_key }}"
+          API_ENDPOINT="/rest/api/2/issue/$ISSUE_KEY"
+          API_RES=$(curl --location --request GET $JIRA_BASE_URL$API_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $JIRA_API_TOKEN")
+          PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
+          PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
+          PRS_ARRAY=("$PR1" "$PR2")
+          for value in "${PRS_ARRAY[@]}"; do
+            if [[ -n "$value" ]]; then
+              echo "Processing value: $value"
         
       - name: Update Jira Custom Field - isPRApproved
         env:
