@@ -43,7 +43,7 @@ jobs:
               echo "Processing value: $PR_REVIEWS"
               PR_REVIEWS_LENGTH=${#PR_REVIEWS[@]}
               echo "PR Reviews Length: $PR_REVIEWS_LENGTH"
-              echo "PR Reviews last element: ${PR_REVIEWS[PR_REVIEWS_LENGTH]}"
+              echo "PR Reviews last element: ${PR_REVIEWS[$PR_REVIEWS_LENGTH]}"
             fi
           done
         
