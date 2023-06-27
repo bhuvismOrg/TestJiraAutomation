@@ -35,9 +35,13 @@ jobs:
           PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
           PRS_ARRAY=("$PR1" "$PR2")
+          IS_ALL_PRS_APPROVED="true"
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               echo "Processing value: $value"
+              PR_Status=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
+                | jq -r '.head.ref')
             fi
           done
         
