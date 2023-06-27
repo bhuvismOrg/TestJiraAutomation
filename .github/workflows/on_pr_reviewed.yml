@@ -46,6 +46,7 @@ jobs:
                 IS_ALL_PRS_APPROVED="true"
               else
                 IS_ALL_PRS_APPROVED="false"
+              fi
             fi
           done
           echo "All PRs state: $IS_ALL_PRS_APPROVED"
