@@ -36,7 +36,7 @@ jobs:
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
           PRS_ARRAY=("$PR1" "$PR2")
           for value in "${PRS_ARRAY[@]}"; do
-            if [[ -n "$value" ]]; then
+            if [[ "$value" != null ]]; then
               echo "Processing value: $value"
             fi
           done
