@@ -19,8 +19,17 @@ jobs:
           BRANCH_NAME=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls/${PR_NUMBER}" \
             | jq -r '.head.ref')
-          SECOND_PART=$(echo "$BRANCH_NAME" | cut -d'-' -f2-)
-          echo "issue_key=$SECOND_PART" >> "$GITHUB_ENV"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_ENV"
+          
+      - name: Check Substring
+        run: |
+          if echo "${{ env.branch_name }}" | grep -q "dev-branch"; then
+            SECOND_PART=$(echo "${{env.branch_name}}" | cut -d'-' -f4-)
+            echo "issue_key=$SECOND_PART" >> "$GITHUB_ENV"
+          else
+            SECOND_PART=$(echo "${{env.branch_name}}" | cut -d'-' -f2-)
+            echo "issue_key=$SECOND_PART" >> "$GITHUB_ENV"
+          fi
           
       - name: Check all PRs in the ticket
         env:
@@ -33,24 +42,33 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $JIRA_API_TOKEN")
           PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
+          REPO1=$(echo "$API_RES" | jq -r '.fields.customfield_10035')
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
+          REPO2=$(echo "$API_RES" | jq -r '.fields.customfield_10041')
           PRS_ARRAY=("$PR1" "$PR2")
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
-              IS_ALL_PRS_APPROVED="true"
-              echo "Processing value: $value"
-              PR_State=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
-                | jq '.[-1].state')
-              echo "Before PR State: $PR_State"
-              PR_State=$(echo $PR_State | sed 's/"//g')
-              echo "After PR State: $PR_State"
-              if [[ "$PR_State" == "APPROVED" ]]; then
-                IS_ALL_PRS_APPROVED="true"
+              IS_ALL_PRS_APPROVED="false"
+              echo "Processing value: $value, $PR1,$PR2"
+              if [[ "$value" == "$PR1" ]]; then
+                echo "$REPO1"
+                PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://api.github.com/repos/bhuvismOrg/$REPO1/pulls/$value/reviews" | json_pp)
               else
-                IS_ALL_PRS_APPROVED="false"
+                echo "$REPO2"
+                PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews" | json_pp)
               fi
-              echo "All PRs state: $IS_ALL_PRS_APPROVED"
+              if [[ "$PR_API_RES" != '[]' ]]; then
+                PR_State=$(echo "$PR_API_RES" | jq '.[-1].state')
+                echo "Response: $PR_State"
+                PR_State=$(echo $PR_State | sed 's/"//g')
+                if [[ "$PR_State" == "APPROVED" ]]; then
+                  IS_ALL_PRS_APPROVED="true"
+                else
+                  IS_ALL_PRS_APPROVED="false"
+                fi
+              fi
             fi
           done
           echo "is_all_prs_approved=$IS_ALL_PRS_APPROVED" >> "$GITHUB_ENV"
