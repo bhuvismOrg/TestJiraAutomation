@@ -35,7 +35,6 @@ jobs:
           PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
           PRS_ARRAY=("$PR1" "$PR2")
-          IS_ALL_PRS_APPROVED="true"
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               echo "Processing value: $value"
@@ -43,7 +42,10 @@ jobs:
                 "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
                 | jq '.[-1].state')
               echo "PR State: $PR_State"
-              
+              if [[ "$PR_State" == "APPROVED" ]]; then
+                IS_ALL_PRS_APPROVED="true"
+              else
+                IS_ALL_PRS_APPROVED="false"
             fi
           done
           echo "All PRs state: $IS_ALL_PRS_APPROVED"
