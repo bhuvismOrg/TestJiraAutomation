@@ -67,6 +67,7 @@ jobs:
                   IS_ALL_PRS_APPROVED="true"
                 else
                   IS_ALL_PRS_APPROVED="false"
+                  break
                 fi
               fi
             fi
