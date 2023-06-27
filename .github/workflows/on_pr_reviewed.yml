@@ -73,7 +73,7 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $JIRA_API_TOKEN" \
             -d "$REQUEST_BODY"
-        if: ${{ github.event.review.state == 'APPROVED' }}
+        if: ${{ github.event.review.state == 'APPROVED' && env.is_all_prs_approved == 'true' }}
             
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
@@ -87,4 +87,4 @@ jobs:
         with:
           issue: ${{ env.issue_key }}
           transition: "PR Approved"
-        if: ${{ github.event.review.state == 'APPROVED' }}
+        if: ${{ github.event.review.state == 'APPROVED' && env.is_all_prs_approved == 'true' }}
