@@ -50,6 +50,8 @@ jobs:
               echo "Processing value: $PR_State"
             fi
           done
+          echo "All PRs state: $IS_ALL_PRS_APPROVED"
+          echo "is_all_prs_approved=$IS_ALL_PRS_APPROVED" >> "$GITHUB_ENV"
         
       - name: Update Jira Custom Field - isPRApproved
         env:
