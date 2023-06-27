@@ -35,9 +35,9 @@ jobs:
           PR1=$(echo "$API_RES" | jq -r '.fields.customfield_10034')
           PR2=$(echo "$API_RES" | jq -r '.fields.customfield_10040')
           PRS_ARRAY=("$PR1" "$PR2")
-          IS_ALL_PRS_APPROVED="true"
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
+              IS_ALL_PRS_APPROVED="true"
               echo "Processing value: $value"
               PR_State=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 "https://api.github.com/repos/${{ github.repository }}/pulls/$value/reviews" \
@@ -48,9 +48,9 @@ jobs:
               else
                 IS_ALL_PRS_APPROVED="false"
               fi
+              echo "All PRs state: $IS_ALL_PRS_APPROVED"
             fi
           done
-          echo "All PRs state: $IS_ALL_PRS_APPROVED"
           echo "is_all_prs_approved=$IS_ALL_PRS_APPROVED" >> "$GITHUB_ENV"
         
       - name: Update Jira Custom Field - isPRApproved
