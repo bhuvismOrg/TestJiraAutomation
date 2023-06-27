@@ -57,7 +57,7 @@ jobs:
               else
                 echo "$REPO2"
                 PR_API_RES=$(curl -s 'https://api.github.com/repos/bhuvismOrg/BtempOrg/pulls/59/reviews' \
-                  -H 'Authorization: Bearer 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' | json_pp)
+                  -H 'Authorization: ${{ secrets.GITHUB_TOKEN }}' | json_pp)
               fi
               echo "Response: $PR_API_RES"
               if [[ "$PR_API_RES" != '[]' ]]; then
