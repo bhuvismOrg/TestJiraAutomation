@@ -38,6 +38,8 @@ jobs:
           for value in "${PRS_ARRAY[@]}"; do
             if [[ -n "$value" ]]; then
               echo "Processing value: $value"
+            fi
+          done
         
       - name: Update Jira Custom Field - isPRApproved
         env:
