@@ -70,6 +70,9 @@ jobs:
                   IS_ALL_PRS_APPROVED="false"
                   break
                 fi
+              else
+                IS_ALL_PRS_APPROVED="false"
+                break
               fi
             fi
           done
