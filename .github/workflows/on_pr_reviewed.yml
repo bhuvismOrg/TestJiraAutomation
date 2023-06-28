@@ -49,7 +49,7 @@ jobs:
           for value in "${PRS_ARRAY[@]}"; do
             if [[ "$value" != null ]]; then
               IS_ALL_PRS_APPROVED="false"
-              echo "Processing value: $value, $PR1,$PR2"
+              echo "Processing value: $value"
               if [[ "$value" == "$PR1" ]]; then
                 echo "$REPO1"
                 PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
@@ -57,11 +57,12 @@ jobs:
               else
                 echo "$REPO2"
                 PR_API_RES=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                  "https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews" | json_pp)
+                  -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/bhuvismOrg/$REPO2/pulls/$value/reviews" | json_pp)
               fi
+              echo "Response: $PR_API_RES"
               if [[ "$PR_API_RES" != '[]' ]]; then
                 PR_State=$(echo "$PR_API_RES" | jq '.[-1].state')
-                echo "Response: $PR_State"
+                echo "PR_State: $PR_State"
                 PR_State=$(echo $PR_State | sed 's/"//g')
                 if [[ "$PR_State" == "APPROVED" ]]; then
                   IS_ALL_PRS_APPROVED="true"
@@ -69,6 +70,9 @@ jobs:
                   IS_ALL_PRS_APPROVED="false"
                   break
                 fi
+              else
+                IS_ALL_PRS_APPROVED="false"
+                break
               fi
             fi
           done
