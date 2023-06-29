@@ -10,6 +10,7 @@ var def = 900000
 var task = 77
 var bug = 132-after-dev-deployment
 var subtask = 130-change-after-dev-deployment
+var SoleBug = 133
 
 
 fs.appendFile("./uploads/b.txt", "bande", (err,data) => {
