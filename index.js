@@ -11,6 +11,7 @@ var task = 77
 var bug1 = 132-after-dev-deployment
 var bug2 = 132-independent
 var subtask = 130-change-after-dev-deployment
+var SoleBug = 133
 
 
 fs.appendFile("./uploads/b.txt", "bande", (err,data) => {
