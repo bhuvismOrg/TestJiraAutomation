@@ -8,9 +8,9 @@ var abc = 90000
 var def = 900000
 
 var task = 77
-var bug1 = 132-after-dev-deployment
+var bug1 = 141-after-dev-deployment
 var bug2 = 132-independent
-var subtask = 136-change-after-dev-deployment
+var subtask = 139-change-after-dev-deployment
 var SoleBug = 133
 
 
