@@ -10,7 +10,7 @@ var def = 900000
 var task = 77
 var bug1 = 132-after-dev-deployment
 var bug2 = 132-independent
-var subtask = 139-change-before-dev-deployment
+var subtask = 139-change-after-dev-deployment
 var SoleBug = 133
 
 
