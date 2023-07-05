@@ -15,14 +15,10 @@ jobs:
 
       - name: Get Reviewer Name
         run: |
-          PR_NUMBER=$GITHUB_EVENT_PULL_REQUEST_NUMBER
-          REPO_OWNER=$GITHUB_REPOSITORY_OWNER
-          REPO_NAME=$GITHUB_REPOSITORY
-
-          API_URL="https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER"
+          API_URL="https://api.github.com/users/${{ github.event.requested_reviewer.login }}"
           AUTH_HEADER="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
 
-          REVIEWER_EMAIL=$(curl -s -H "$AUTH_HEADER" "$API_URL" | jq -r '.requested_reviewers[0].email // empty')
+          REVIEWER_EMAIL=$(curl -s -H "$AUTH_HEADER" "$API_URL" | jq -r '.email')
 
           if [[ -n "$REVIEWER_EMAIL" ]]; then
             echo "Reviewer Email: $REVIEWER_EMAIL"
