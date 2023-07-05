@@ -56,7 +56,6 @@ jobs:
           all_jira_users=$(curl --location --request GET $JIRA_BASE_URL$API_ENDPOINT \
             -H "Content-Type: application/json" \
             -H "Authorization: Basic $JIRA_API_TOKEN")
-          echo "$all_jira_users"
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=''
