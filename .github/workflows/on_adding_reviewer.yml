@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Get Reviewer Name
+      - name: Get Reviewer Email
         run: |
           API_URL="https://api.github.com/users/${{ github.event.requested_reviewer.login }}"
           AUTH_HEADER="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
@@ -25,7 +25,7 @@ jobs:
           else
             echo "Reviewer Email not found."
           fi
-          echo "Reviewer=${{ github.event.requested_reviewer.login }}" >> "$GITHUB_ENV"
+          echo "Reviewer_Email=$REVIEWER_EMAIL" >> "$GITHUB_ENV"
           
       - name: Retrieve Issue Key from Branch Name
         run: |
@@ -58,6 +58,18 @@ jobs:
             -H "Authorization: Basic $JIRA_API_TOKEN")
           echo "$all_jira_users"
           echo "${{ github.event.requested_reviewer.login }}"
+          match_found=false
+          accountId=''
+          while IFS=read -r line; do
+            jiraEmail=$(echo "$line" | jq -r '.emailAddress')
+            if [[ "$jiraEmail" == "${{ env.Reviewer_Email }}"]]; then
+              match_found=true
+              accountId=$(echo "$line" | jq -r '.accountId')
+              break
+            fi
+          done <<< "$all_jira_users"
+          echo "$accountId"
+          echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
 #       - name: Update Jira Custom Field - isPRApproved
 #         env:
