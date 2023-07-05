@@ -58,7 +58,7 @@ jobs:
             -H "Authorization: Basic $JIRA_API_TOKEN" | json_pp)
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
-          accountId=$(echo "$all_jira_users" | jq '.[-1].accountId')
+          accountId=$(echo "$all_jira_users" | jq '.[1].accountId')
           echo "res: ${all_jira_users[0]}"
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
