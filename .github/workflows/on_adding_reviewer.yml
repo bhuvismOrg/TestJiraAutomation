@@ -59,6 +59,8 @@ jobs:
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[1].accountId')
+          array_length=$(echo "$all_jira_users" | jq '. | length')
+          echo "array_length: $array_length"
           if [[ $all_jira_users =~ ^\[.*\]$ ]]; then
             jiraEmails=$(echo "$all_jira_users" | jq -r '.[].emailAddress')
             echo "API response is an array."
