@@ -59,7 +59,11 @@ jobs:
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[1].accountId')
-          echo "res: ${all_jira_users[0]}"
+          if [[ $all_jira_users =~ ^\[.*\]$ ]]; then
+              echo "API response is an array."
+          else
+              echo "API response is not an array."
+          fi  
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
