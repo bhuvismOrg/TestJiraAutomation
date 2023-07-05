@@ -60,9 +60,9 @@ jobs:
           match_found=false
           accountId=''
           for value in "${all_jira_users[@]}"; do
+            echo "entered for: $(echo "$value" | jq -r '.emailAddress')"
             jiraEmail=$(echo "$value" | jq -r '.emailAddress')
-            echo "$jiraEmail"
-            if [[ "$jiraEmail" == "${{ env.Reviewer_Email }}"]]; then
+            if [[ "$jiraEmail" == "$Reviewer_Email" ]]; then
               match_found=true
               accountId=$(echo "$value" | jq -r '.accountId')
               break
