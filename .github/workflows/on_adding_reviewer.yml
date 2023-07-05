@@ -64,7 +64,7 @@ jobs:
             echo "$jiraEmail"
             if [[ "$jiraEmail" == "${{ env.Reviewer_Email }}"]]; then
               match_found=true
-              accountId=$(echo "$line" | jq -r '.accountId')
+              accountId=$(echo "$value" | jq -r '.accountId')
               break
             fi
           done
