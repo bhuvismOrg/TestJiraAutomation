@@ -15,6 +15,16 @@ jobs:
 
       - name: Get Reviewer Name
         run: |
+          PR_NUMBER=$GITHUB_EVENT_PULL_REQUEST_NUMBER
+          REPO_OWNER=$GITHUB_REPOSITORY_OWNER
+          REPO_NAME=$GITHUB_REPOSITORY
+
+          API_URL="https://api.github.com/repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER"
+          AUTH_HEADER="Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}"
+
+          REVIEWER_EMAIL=$(curl -s -H "$AUTH_HEADER" "$API_URL" | jq -r '.requested_reviewers[].email')
+
+          echo "Reviewer Email: $REVIEWER_EMAIL"
           echo "Reviewer=${{ github.event.requested_reviewer.login }}" >> "$GITHUB_ENV"
           
       - name: Retrieve Issue Key from Branch Name
