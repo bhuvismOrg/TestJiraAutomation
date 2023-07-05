@@ -59,7 +59,7 @@ jobs:
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[-1].accountId')
-          echo "res: $all_jira_users"
+          echo "res: ${#all_jira_users[@]}"
           for value in "${all_jira_users[@]}"; do
             echo "entered for: $value"
             jiraEmail=$(echo "$value" | jq -r '.emailAddress')
