@@ -59,19 +59,7 @@ jobs:
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[-1].accountId')
-          echo "res: ${#all_jira_users[@]}"
-          json_object=$(echo "$all_jira_users" | jq -c '.')
-          echo "json_object: $json_object"
-          echo "json_object_length: ${#json_object[@]}"
-          for value in "${all_jira_users[@]}"; do
-            echo "entered for: $value"
-            jiraEmail=$(echo "$value" | jq -r '.emailAddress')
-            if [[ "$jiraEmail" == "$Reviewer_Email" ]]; then
-              match_found=true
-              accountId=$(echo "$value" | jq -r '.accountId')
-              break
-            fi
-          done
+          echo "res: ${all_jira_users[0]}"
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
