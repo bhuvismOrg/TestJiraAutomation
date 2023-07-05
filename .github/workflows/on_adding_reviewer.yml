@@ -45,7 +45,7 @@ jobs:
             echo "issue_key=$SECOND_PART" >> "$GITHUB_ENV"
           fi
           
-      - name: Get all users of the particular issue
+      - name: Get Jira's Account ID of the Reviewer
         env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_BASIC_API_TOKEN }}
@@ -71,23 +71,23 @@ jobs:
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
-#       - name: Update Jira Custom Field - isPRApproved
-#         env:
-#           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-#           JIRA_API_TOKEN: ${{ secrets.JIRA_BASIC_API_TOKEN }}
-#         run: |
-#           ISSUE_KEY="${{ env.issue_key }}"  # Replace with the Jira issue key
-#           API_ENDPOINT="/rest/api/2/issue/$ISSUE_KEY"  # Replace with the desired Jira API endpoint
+      - name: Update Assignee Field - Jira
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_BASIC_API_TOKEN }}
+        run: |
+          ISSUE_KEY="${{ env.issue_key }}"  # Replace with the Jira issue key
+          API_ENDPOINT="/rest/api/2/issue/$ISSUE_KEY"  # Replace with the desired Jira API endpoint
 
-#           REQUEST_BODY='{
-#             "fields": {
-#                 "assignee": {
-#                   "accountId": "712020:0f05f686-533d-49d1-928f-7a4a092c22e0"
-#                 }
-#             }
-#           }'
+          REQUEST_BODY='{
+            "fields": {
+                "assignee": {
+                  "accountId": "${{ env.AccountId }}"
+                }
+            }
+          }'
 
-#           curl --location --request PUT $JIRA_BASE_URL$API_ENDPOINT \
-#             -H "Content-Type: application/json" \
-#             -H "Authorization: Basic $JIRA_API_TOKEN" \
-#             -d "$REQUEST_BODY"
+          curl --location --request PUT $JIRA_BASE_URL$API_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Basic $JIRA_API_TOKEN" \
+            -d "$REQUEST_BODY"
