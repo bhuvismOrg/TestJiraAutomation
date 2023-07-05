@@ -59,7 +59,7 @@ jobs:
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=''
-          json_data='$all_jira_users'
+          json_data=$all_jira_users
           while IFS= read -r line; do
             echo "line: $line"
             jiraEmail=$(echo "$line" | jq -r '.emailAddress')
