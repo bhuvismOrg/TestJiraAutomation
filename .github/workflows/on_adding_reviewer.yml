@@ -60,6 +60,9 @@ jobs:
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[-1].accountId')
           echo "res: ${#all_jira_users[@]}"
+          json_object=$(echo "$all_jira_users" | jq -c '.')
+          echo "json_object: $json_object"
+          echo "json_object_length: ${#json_object[@]}"
           for value in "${all_jira_users[@]}"; do
             echo "entered for: $value"
             jiraEmail=$(echo "$value" | jq -r '.emailAddress')
