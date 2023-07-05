@@ -62,6 +62,7 @@ jobs:
           accountId=''
           while IFS=read -r line; do
             jiraEmail=$(echo "$line" | jq -r '.emailAddress')
+            echo "$jiraEmail"
             if [[ "$jiraEmail" == "${{ env.Reviewer_Email }}"]]; then
               match_found=true
               accountId=$(echo "$line" | jq -r '.accountId')
