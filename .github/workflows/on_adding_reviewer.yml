@@ -58,18 +58,16 @@ jobs:
             -H "Authorization: Basic $JIRA_API_TOKEN" | json_pp)
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
-          accountId=$(echo "$all_jira_users" | jq '.[1].accountId')
-          array_length=$(echo "$all_jira_users" | jq '. | length')
+          res_array_length=$(echo "$all_jira_users" | jq '. | length')
           echo "array_length: $array_length"
-          if [[ $all_jira_users =~ ^\[.*\]$ ]]; then
-            jiraEmails=$(echo "$all_jira_users" | jq -r '.[].emailAddress')
-            echo "API response is an array."
-            for email in $jiraEmails; do
-              echo "Email: $email"
-            done
-          else
-              echo "API response is not an array."
-          fi  
+          for ((i=0; i<$res_array_length; i++)); do
+            jiraEmail=$(echo "$all_jira_users" | jq -r ".[$i].emailAddress")
+            if [[ "$jiraEmail" = "${{ env.Reviewer_Email }}" ]]; then
+              match_found=true
+              accountId=$(echo "$all_jira_users" | jq -r ".[$i].accountId")
+              break
+            fi
+          done
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
