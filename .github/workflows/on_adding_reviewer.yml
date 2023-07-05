@@ -55,11 +55,20 @@ jobs:
           
           all_jira_users=$(curl --location --request GET $JIRA_BASE_URL$API_ENDPOINT \
             -H "Content-Type: application/json" \
-            -H "Authorization: Basic $JIRA_API_TOKEN")
+            -H "Authorization: Basic $JIRA_API_TOKEN" | json_pp)
           echo "${{ github.event.requested_reviewer.login }}"
           match_found=false
           accountId=$(echo "$all_jira_users" | jq '.[-1].accountId')
           echo "res: $all_jira_users"
+          for value in "${all_jira_users[@]}"; do
+            echo "entered for: $value"
+            jiraEmail=$(echo "$value" | jq -r '.emailAddress')
+            if [[ "$jiraEmail" == "$Reviewer_Email" ]]; then
+              match_found=true
+              accountId=$(echo "$value" | jq -r '.accountId')
+              break
+            fi
+          done
           echo "$accountId"
           echo "AccountId=$accountId" >> "$GITHUB_ENV"
           
