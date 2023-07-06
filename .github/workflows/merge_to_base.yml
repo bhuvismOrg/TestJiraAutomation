@@ -41,6 +41,33 @@ jobs:
               pull_number: prNo
             });
             
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      
+      - name: Cache node modules
+        id: cache-node_modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-node_modules.outputs.cache-hit != 'true' }}
+        name: npm i
+        continue-on-error: true
+        run: npm i
+
+      - name: Building
+        run: CI=false npm run build:staging:zip --if-present
+            
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
         env:
