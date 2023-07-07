@@ -6,7 +6,8 @@ var port = 900
 var xyz = 9000
 var abc = 90000
 var def = 900000
-
+var story = 145
+var storyBug = 146
 var task = 77
 var bug1 = 141-after-dev-deployment
 var bug2 = 132-independent
