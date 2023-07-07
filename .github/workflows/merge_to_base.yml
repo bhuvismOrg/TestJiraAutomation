@@ -19,28 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Merge PR to UAT
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const prNo = process.env.prNo;
-            const owner = process.env.owner;
-            const repo = process.env.repo;
-            console.log(prNo, owner, repo, process.env.issueKey);
-            const { data: pullRequest } = await github.pulls.get({
-              owner: owner,
-              repo: repo,
-              pull_number: prNo
-            });
-            
-            await github.pulls.merge({
-              owner: owner,
-              repo: repo,
-              pull_number: prNo
-            });
-            
+        
       - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
@@ -67,6 +46,78 @@ jobs:
 
       - name: Building
         run: CI=false npm run build:staging:zip --if-present
+
+      - name: Merge PR to UAT
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNo = process.env.prNo;
+            const owner = process.env.owner;
+            const repo = process.env.repo;
+            console.log(prNo, owner, repo, process.env.issueKey);
+            const { data: pullRequest } = await github.pulls.get({
+              owner: owner,
+              repo: repo,
+              pull_number: prNo
+            });
+            
+            await github.pulls.merge({
+              owner: owner,
+              repo: repo,
+              pull_number: prNo
+            });
+            
+      - name: Notify deployment failure via email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # Required mail server address:
+          server_address: smtp.gmail.com
+          # Required mail server port:
+          server_port: 465
+          # # Optional (recommended): mail server username:
+          username: ${{secrets.ADMIN_EMAIL}}
+          # # Optional (recommended) mail server password:
+          password: ${{secrets.ADMIN_EMAIL_PASSWORD}}
+          # Required mail subject:
+          subject: STG-Deployment failure
+          # Required recipients' addresses:
+          to: anand.8405@gmail.com
+          # Required sender full name (address can be skipped):
+          from: bhuvanbhuvism@gmail.com # <user@example.com>
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Optional plain body:
+          # body:
+          # Optional HTML body read from file:
+          html_body:
+            <div>
+                <div>Hello Team,</div>
+                <div>
+                  Automated job for staging deployment is failed.
+                  There must be some build issue related to the code. <a href="https://github.com/${{github.event.commits[0].author.username}}">@${{github.event.commits[0].author.username}}</a>, you are requested to check the build and push the same.
+                </div>
+                <div>Check the <a href='https://github.com/${{github.repository}}/actions'>Github actions</a> for more details.</div><br />
+                <div>
+                  Regards,<br/>
+                  Dev Admin
+                </div>
+            </div>
+          # Optional carbon copy recipients:
+          # cc: kyloren@example.com,leia@example.com
+          # Optional blind carbon copy recipients:
+          # bcc: r2d2@example.com,hansolo@example.com
+          # Optional recipient of the email response:
+          # reply_to: luke@example.com
+          # Optional unsigned/invalid certificates allowance:
+          ignore_cert: true
+          # Optional converting Markdown to HTML (set content_type to text/html too):
+          convert_markdown: true
+          # Optional attachments:
+          # attachments: attachments.zip,git.diff,./dist/static/*.js
+          # Optional priority: 'high', 'normal' (default) or 'low'
+          priority: high
             
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
