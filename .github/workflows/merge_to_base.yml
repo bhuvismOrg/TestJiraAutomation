@@ -19,17 +19,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      
-      - name: Install Dependencies
-        run: npm install
-      
-      - name: Build
-        run: npm run build
 
       - name: Merge PR to UAT
         uses: actions/github-script@v4
@@ -67,9 +56,9 @@ jobs:
           # Required mail subject:
           subject: STG-Deployment failure
           # Required recipients' addresses:
-          to: anand.8405@gmail.com
+          to: anand.s@ihx.in
           # Required sender full name (address can be skipped):
-          from: bhuvanbhuvism@gmail.com # <user@example.com>
+          from: bhuvan.jain@ihx.in # <user@example.com>
           # Optional whether this connection use TLS (default is true if server_port is 465)
           secure: true
           # Optional plain body:
