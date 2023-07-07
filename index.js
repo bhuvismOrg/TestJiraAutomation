@@ -11,7 +11,7 @@ var storyBug = 146
 var task = 77
 var bug1 = 152-after-dev-deployment
 var bug2 = 132-independent
-var subtask = 139-change-after-dev-deployment
+var subtask = 154-change-after-dev-deployment
 var SoleBug = 133
 
 
