@@ -19,28 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Merge PR to UAT
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const prNo = process.env.prNo;
-            const owner = process.env.owner;
-            const repo = process.env.repo;
-            console.log(prNo, owner, repo, process.env.issueKey);
-            const { data: pullRequest } = await github.pulls.get({
-              owner: owner,
-              repo: repo,
-              pull_number: prNo
-            });
-            
-            await github.pulls.merge({
-              owner: owner,
-              repo: repo,
-              pull_number: prNo
-            });
-            
+        
       - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
@@ -67,6 +46,27 @@ jobs:
 
       - name: Building
         run: CI=false npm run build:staging:zip --if-present
+
+      - name: Merge PR to UAT
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNo = process.env.prNo;
+            const owner = process.env.owner;
+            const repo = process.env.repo;
+            console.log(prNo, owner, repo, process.env.issueKey);
+            const { data: pullRequest } = await github.pulls.get({
+              owner: owner,
+              repo: repo,
+              pull_number: prNo
+            });
+            
+            await github.pulls.merge({
+              owner: owner,
+              repo: repo,
+              pull_number: prNo
+            });
             
       - name: Login to Jira
         uses: atlassian/gajira-login@v3
